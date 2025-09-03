@@ -2,31 +2,53 @@
 
 Um simulador interativo e educativo para visualizar e compreender o funcionamento de diferentes estruturas de dados fundamentais da ciência da computação.
 
+🚀 **[ACESSE O SIMULADOR ONLINE](https://simulador-est-dados.vercel.app/)** 🚀
+
 ## 🎯 Objetivo
 
 Este projeto foi desenvolvido para ajudar estudantes e profissionais a compreender visualmente como funcionam as principais estruturas de dados, suas operações e características através de simulações interativas e animadas.
+
+## 🎥 Demonstração
+
+![Simulador em Ação](https://raw.githubusercontent.com/Ssnowzx/SimuladorEstDados/main/demo.gif)
+
+*Interface interativa mostrando simulação de fila com animações em tempo real*
+
+### 🌟 Principais Destaques
+
+- ✅ **Interface intuitiva** com explicações em português
+- ✅ **Animações suaves** para visualizar operações
+- ✅ **6 estruturas de dados** fundamentais
+- ✅ **Controle de velocidade** personalizável
+- ✅ **Log detalhado** de todas as operações
+- ✅ **Design responsivo** para mobile e desktop
 
 ## ✨ Funcionalidades
 
 ### 🏗️ Estruturas de Dados Implementadas
 
 1. **Fila (Queue)** - FIFO (First In, First Out)
+
    - Operações: Enqueue (adicionar) e Dequeue (remover)
    - Analogia: Fila de supermercado
 
 2. **Pilha (Stack)** - LIFO (Last In, First Out)
+
    - Operações: Push (empilhar) e Pop (desempilhar)
    - Analogia: Pilha de pratos
 
 3. **Lista Encadeada Simples**
+
    - Operações: Inserir no início/fim, remover do início
    - Visualização de ponteiros direcionais
 
 4. **Lista Duplamente Encadeada**
+
    - Operações: Inserir/remover do início e fim
    - Visualização de ponteiros bidirecionais
 
 5. **Lista Circular**
+
    - Operações: Adicionar e rotacionar elementos
    - Visualização do ciclo circular
 
@@ -83,8 +105,14 @@ SimuladorEstDados/
 
 ## 🚀 Como Usar
 
-### Versão Modular (Recomendada)
-Abra o arquivo `index.html` com um servidor local para melhor compatibilidade:
+### 🌐 Versão Online (Mais Fácil)
+**[👉 Clique aqui para usar diretamente no navegador](https://simulador-est-dados.vercel.app/)**
+
+Não precisa instalar nada! Funciona em qualquer dispositivo com navegador moderno.
+
+### 💻 Versão Local (Desenvolvimento)
+
+Para executar localmente e fazer modificações:
 
 ```bash
 # Clone o repositório
@@ -105,23 +133,26 @@ php -S localhost:8000
 # Acesse http://localhost:8000
 ```
 
-### Versão Monolítica (Legado)
-Para compatibilidade máxima, você pode usar `simuladorDados.html` diretamente no navegador.
+### 📄 Versão Offline (Compatibilidade)
+Para máxima compatibilidade, você pode usar `simuladorDados.html` diretamente no navegador (sem servidor).
 
 ## 📱 Interface do Usuário
 
 ### Painel de Controle
+
 - **Seletor de Estrutura**: Escolha qual estrutura de dados visualizar
 - **Botões de Ação**: Operações específicas para cada estrutura
 - **Controle de Velocidade**: Slider para ajustar a velocidade das animações
 - **Campo de Índice**: Para operações que requerem posição específica
 
 ### Área de Visualização
+
 - **Caixa da Estrutura**: Mostra os elementos e suas conexões
 - **Painel de Ação**: Exibe animações das operações em execução
 - **Fila de Espera**: Lista das próximas operações a serem executadas
 
 ### Log de Operações
+
 - Histórico completo de todas as ações realizadas
 - Indicadores visuais para diferentes tipos de operações
 - Limitado a 50 entradas para performance
@@ -146,12 +177,14 @@ Para compatibilidade máxima, você pode usar `simuladorDados.html` diretamente 
 Cada estrutura de dados inclui:
 
 ### Explicações Teóricas
+
 - **Princípio**: Como a estrutura funciona
 - **Analogia**: Comparação com situações do cotidiano
 - **Complexidade**: Análise de Big O das operações
 - **Uso Comum**: Aplicações práticas no mundo real
 
 ### Exemplos Visuais
+
 - Representação gráfica dos elementos
 - Indicadores de posição (índices)
 - Setas direcionais para ponteiros
@@ -185,4 +218,4 @@ Desenvolvido com ❤️ para facilitar o aprendizado de estruturas de dados.
 
 ---
 
-*Aprenda, visualize e domine as estruturas de dados fundamentais da computação!* 🚀
+_Aprenda, visualize e domine as estruturas de dados fundamentais da computação!_ 🚀
