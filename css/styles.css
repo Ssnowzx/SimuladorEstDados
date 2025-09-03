@@ -1,0 +1,63 @@
+/* Estilos customizados para o simulador */
+body {
+  font-family: "Inter", sans-serif;
+}
+
+/* Animações dos elementos */
+.task {
+  transition: all 0.5s ease-in-out;
+  border: 2px solid transparent;
+}
+
+.processing-out {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.highlight-op {
+  animation: highlight-op 1.5s ease;
+  border-color: #6366f1;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+@keyframes highlight-op {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: #e0e7ff;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Scrollbar customizado para o log */
+#log-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+#log-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+#log-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+#log-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsividade adicional */
+@media (max-width: 768px) {
+  .task {
+    padding: 0.5rem;
+  }
+  
+  .task span {
+    font-size: 0.9rem;
+  }
+}

@@ -47,12 +47,45 @@ Este projeto foi desenvolvido para ajudar estudantes e profissionais a compreend
   - Complexidade computacional
   - Casos de uso comuns
 
+## 🏗️ Estrutura do Projeto
+
+```
+SimuladorEstDados/
+├── index.html              # Arquivo principal HTML (versão modular)
+├── simuladorDados.html     # Versão monolítica (legado)
+├── README.md               # Documentação
+├── css/
+│   └── styles.css          # Estilos customizados
+└── js/
+    ├── app.js              # Classe principal da aplicação
+    ├── state.js            # Gerenciamento de estado
+    ├── operations.js       # Operações das estruturas
+    ├── ui.js               # Renderização da interface
+    └── structures.js       # Configurações das estruturas
+```
+
+### 🔧 Arquitetura Modular
+
+- **`app.js`**: Classe principal que coordena toda a aplicação
+- **`state.js`**: Gerencia o estado global (elementos, fila de ações, log)
+- **`operations.js`**: Implementa as operações específicas de cada estrutura
+- **`ui.js`**: Responsável pela renderização e interface do usuário
+- **`structures.js`**: Configurações e definições das estruturas de dados
+- **`styles.css`**: Estilos customizados e animações
+
+### 📦 Vantagens da Nova Arquitetura
+
+- **Separação de responsabilidades**: Cada módulo tem uma função específica
+- **Manutenibilidade**: Código mais fácil de modificar e expandir
+- **Reutilização**: Componentes podem ser reutilizados em outros projetos
+- **Testabilidade**: Módulos podem ser testados independentemente
+- **Legibilidade**: Código mais organizado e fácil de entender
+
 ## 🚀 Como Usar
 
-### Acesso Direto
-Abra o arquivo `simuladorDados.html` diretamente no seu navegador.
+### Versão Modular (Recomendada)
+Abra o arquivo `index.html` com um servidor local para melhor compatibilidade:
 
-### Servidor Local (Opcional)
 ```bash
 # Clone o repositório
 git clone https://github.com/Ssnowzx/SimuladorEstDados.git
@@ -60,11 +93,20 @@ git clone https://github.com/Ssnowzx/SimuladorEstDados.git
 # Entre no diretório
 cd SimuladorEstDados
 
-# Abra com um servidor local (exemplo com Python)
+# Opção 1: Python
 python -m http.server 8000
+
+# Opção 2: Node.js (live-server)
+npx live-server
+
+# Opção 3: PHP
+php -S localhost:8000
 
 # Acesse http://localhost:8000
 ```
+
+### Versão Monolítica (Legado)
+Para compatibilidade máxima, você pode usar `simuladorDados.html` diretamente no navegador.
 
 ## 📱 Interface do Usuário
 
