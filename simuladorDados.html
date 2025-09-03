@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Estruturas de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .task {
+        transition: all 0.5s ease-in-out;
+        border: 2px solid transparent;
+      }
+      .processing-out {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      .highlight-op {
+        animation: highlight-op 1.5s ease;
+        border-color: #6366f1;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+      }
+      @keyframes highlight-op {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+          background-color: #e0e7ff;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      /* Scrollbar customizado para o log */
+      #log-container::-webkit-scrollbar {
+        width: 8px;
+      }
+      #log-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      #log-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      #log-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 text-slate-800 p-4 sm:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl p-6">
+      <!-- Cabeçalho e Seletor -->
+      <header class="text-center pb-6 border-b border-slate-200">
+        <h1 class="text-4xl font-bold text-slate-900">
+          Painel de Simulação de Estruturas de Dados
+        </h1>
+        <div class="mt-4 max-w-md mx-auto">
+          <label
+            for="structure-select"
+            class="block text-sm font-medium text-slate-700"
+            >Selecione a Estrutura de Dados:</label
+          >
+          <select
+            id="structure-select"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+          >
+            <option value="queue">Fila (Queue)</option>
+            <option value="stack">Pilha (Stack)</option>
+            <option value="singlyLinkedList">Lista Encadeada Simples</option>
+            <option value="doublyLinkedList">Lista Duplamente Encadeada</option>
+            <option value="circularList">Lista Circular</option>
+            <option value="staticList">Lista Estática</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Corpo da Simulação -->
+      <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <!-- Coluna 1: Controles e Log -->
+        <div
+          class="lg:col-span-1 bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col gap-6"
+        >
+          <div>
+            <h2 class="text-xl font-semibold mb-4 text-center">
+              Painel de Controle
+            </h2>
+            <div id="controls-container" class="space-y-3">
+              <!-- Botões dinâmicos aqui -->
+            </div>
+            <div id="index-input-container" class="mt-4 hidden">
+              <label
+                for="index-input"
+                class="block text-sm font-medium text-slate-700"
+                >Índice:</label
+              >
+              <input
+                type="number"
+                id="index-input"
+                min="0"
+                value="0"
+                class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div id="speed-control-container" class="mt-4">
+              <label
+                for="speed-slider"
+                class="block text-sm font-medium text-slate-700 mb-1"
+                >Velocidade de Processamento:</label
+              >
+              <input
+                type="range"
+                id="speed-slider"
+                min="500"
+                max="2500"
+                value="1500"
+                step="100"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>Lento</span>
+                <span>Rápido</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-grow flex flex-col">
+            <h3 class="font-semibold text-center mb-2">Log de Operações</h3>
+            <div
+              id="log-container"
+              class="bg-white p-3 rounded-md flex-grow h-48 overflow-y-auto text-sm space-y-1 border"
+            >
+              <p class="text-slate-400">Nenhuma operação ainda.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna 2: Visualização -->
+        <div class="lg:col-span-2 space-y-4">
+          <div
+            id="explanation-box"
+            class="bg-sky-100 border-l-4 border-sky-500 text-sky-800 p-4 rounded-r-lg min-h-[70px]"
+          >
+            <h3 class="font-bold">O que está acontecendo?</h3>
+            <p id="explanation-text">
+              Selecione uma estrutura e adicione elementos para começar.
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Caixa da Estrutura (Esquerda) -->
+            <div
+              class="bg-slate-200 rounded-lg p-4 border-2 border-dashed border-slate-400 min-h-[20rem]"
+            >
+              <h3
+                id="structure-title"
+                class="font-semibold text-center mb-2 text-lg"
+              >
+                Estrutura de Dados
+              </h3>
+              <div id="task-container" class="space-y-2">
+                <!-- Tarefas dinâmicas aqui -->
+              </div>
+            </div>
+            <!-- Caixa da Ação (Direita) -->
+            <div
+              class="bg-indigo-100 rounded-lg p-4 border-2 border-dashed border-indigo-300 min-h-[20rem] flex flex-col"
+            >
+              <h3
+                class="font-semibold text-center mb-2 text-lg text-indigo-800"
+              >
+                Painel de Ação
+              </h3>
+              <div
+                id="action-container"
+                class="flex items-center justify-center flex-grow"
+              >
+                <p class="text-slate-500">Aguardando ação...</p>
+              </div>
+              <div
+                id="waiting-list-container"
+                class="mt-2 pt-2 border-t border-indigo-200"
+              >
+                <!-- Lista de espera aqui -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Seção de Explicação da Estrutura -->
+      <footer
+        id="concept-explanation"
+        class="mt-8 pt-6 border-t border-slate-200"
+      >
+        <!-- Explicação dinâmica aqui -->
+      </footer>
+    </div>
+
+    <script>
+      // --- Estado Global e Elementos ---
+      const select = document.getElementById("structure-select");
+      const controlsContainer = document.getElementById("controls-container");
+      const indexInputContainer = document.getElementById(
+        "index-input-container"
+      );
+      const indexInput = document.getElementById("index-input");
+      const explanationText = document.getElementById("explanation-text");
+      const taskContainer = document.getElementById("task-container");
+      const structureTitle = document.getElementById("structure-title");
+      const conceptExplanation = document.getElementById("concept-explanation");
+      const actionContainer = document.getElementById("action-container");
+      const speedSlider = document.getElementById("speed-slider");
+      const logContainer = document.getElementById("log-container");
+      const waitingListContainer = document.getElementById(
+        "waiting-list-container"
+      );
+
+      let state = {
+        elements: [],
+        actionQueue: [],
+        log: [],
+        isProcessing: false,
+        taskId: 0,
+        maxSize: 8,
+        processingSpeed: 1500,
+      };
+      let processInterval = null;
+
+      // --- Definições das Estruturas de Dados ---
+      const SIMULATIONS = {
+        queue: {
+          name: "Fila (Queue)",
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Fila (Queue)</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> FIFO (First-In, First-Out) - O primeiro elemento que entra é o primeiro a sair.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Pense em uma fila de supermercado. Quem chega primeiro, é atendido primeiro.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção (enqueue) e Remoção (dequeue) são O(1).</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Gerenciamento de tarefas (impressão, processos), buffers de dados.</p>`,
+          controls: [
+            {
+              label: "Adicionar no Fim (Enqueue)",
+              action: "enqueue",
+              color: "emerald",
+            },
+            {
+              label: "Remover do Início (Dequeue)",
+              action: "dequeue",
+              color: "rose",
+            },
+          ],
+          process: (action) => {
+            if (action === "enqueue") {
+              if (
+                state.elements.length >= state.maxSize &&
+                select.value === "staticList"
+              ) {
+                updateExplanation("Erro: A lista estática está cheia!");
+                return false;
+              }
+              const value = Math.floor(Math.random() * 900) + 100;
+              state.elements.push({ id: state.taskId++, value });
+              addToLog(`✅ Adicionado ${value} ao fim.`);
+              return true;
+            } else if (action === "dequeue") {
+              if (state.elements.length === 0) {
+                updateExplanation("A estrutura está vazia.");
+                return false;
+              }
+              const removed = state.elements.shift();
+              animateAndRemove(removed, `Removido ${removed.value} do início.`);
+              return true;
+            }
+          },
+        },
+        stack: {
+          name: "Pilha (Stack)",
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Pilha (Stack)</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> LIFO (Last-In, First-Out) - O último elemento que entra é o primeiro a sair.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma pilha de pratos. Você coloca um prato no topo e remove o prato do topo.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção (push) e Remoção (pop) são O(1).</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Botão "Voltar" em navegadores, funcionalidade de "Desfazer" (Undo), gerenciamento de chamadas de função.</p>`,
+          controls: [
+            { label: "Empilhar (Push)", action: "push", color: "emerald" },
+            { label: "Desempilhar (Pop)", action: "pop", color: "rose" },
+          ],
+          process: (action) => {
+            if (action === "push") {
+              const value = Math.floor(Math.random() * 900) + 100;
+              state.elements.push({ id: state.taskId++, value });
+              addToLog(`✅ Empilhado ${value}.`);
+              return true;
+            } else if (action === "pop") {
+              if (state.elements.length === 0) {
+                updateExplanation("A estrutura está vazia.");
+                return false;
+              }
+              const removed = state.elements.pop();
+              animateAndRemove(
+                removed,
+                `Desempilhado ${removed.value} do topo.`
+              );
+              return true;
+            }
+          },
+        },
+        singlyLinkedList: {
+          name: "Lista Encadeada Simples",
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Lista Encadeada Simples</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> Elementos (nós) conectados em sequência através de ponteiros, apenas em uma direção.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma caça ao tesouro, onde cada pista aponta para a próxima.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção/Remoção no início é O(1). No fim, é O(n) se não houver ponteiro para a cauda. Acesso/Busca é O(n).</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Implementação de outras estruturas (pilhas, filas), gerenciamento de memória dinâmica.</p>`,
+          controls: [
+            {
+              label: "Inserir no Início",
+              action: "add_start",
+              color: "emerald",
+            },
+            { label: "Inserir no Fim", action: "add_end", color: "teal" },
+            {
+              label: "Remover do Início",
+              action: "remove_start",
+              color: "rose",
+            },
+          ],
+          process: (action) => {
+            const value = Math.floor(Math.random() * 900) + 100;
+            if (action === "add_start") {
+              state.elements.unshift({ id: state.taskId++, value });
+              addToLog(`✅ Inserido ${value} no início.`);
+            } else if (action === "add_end") {
+              state.elements.push({ id: state.taskId++, value });
+              addToLog(`✅ Inserido ${value} no fim.`);
+            } else if (action === "remove_start") {
+              if (state.elements.length === 0) {
+                updateExplanation("A lista está vazia.");
+                return false;
+              }
+              const removed = state.elements.shift();
+              animateAndRemove(removed, `Removido ${removed.value} do início.`);
+            }
+            return true;
+          },
+        },
+        doublyLinkedList: {
+          name: "Lista Duplamente Encadeada",
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Lista Duplamente Encadeada</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> Cada nó aponta para o próximo e também para o anterior, permitindo navegação em ambos os sentidos.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Um trem com vagões conectados em ambos os lados, permitindo ir para frente e para trás.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção/Remoção no início ou fim é O(1). Remoção de um elemento específico (se o nó for conhecido) é O(1).</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Listas de "Mais recentes" (MRU), funcionalidade de "Desfazer/Refazer" (Undo/Redo).</p>`,
+          controls: [
+            {
+              label: "Inserir no Início",
+              action: "add_start",
+              color: "emerald",
+            },
+            { label: "Inserir no Fim", action: "add_end", color: "teal" },
+            {
+              label: "Remover do Início",
+              action: "remove_start",
+              color: "rose",
+            },
+            { label: "Remover do Fim", action: "remove_end", color: "red" },
+          ],
+          process: (action) => {
+            const value = Math.floor(Math.random() * 900) + 100;
+            if (action === "add_start") {
+              state.elements.unshift({ id: state.taskId++, value });
+              addToLog(`✅ Inserido ${value} no início.`);
+            } else if (action === "add_end") {
+              state.elements.push({ id: state.taskId++, value });
+              addToLog(`✅ Inserido ${value} no fim.`);
+            } else if (action === "remove_start") {
+              if (state.elements.length === 0) {
+                updateExplanation("A lista está vazia.");
+                return false;
+              }
+              const removed = state.elements.shift();
+              animateAndRemove(removed, `Removido ${removed.value} do início.`);
+            } else if (action === "remove_end") {
+              if (state.elements.length === 0) {
+                updateExplanation("A lista está vazia.");
+                return false;
+              }
+              const removed = state.elements.pop();
+              animateAndRemove(removed, `Removido ${removed.value} do fim.`);
+            }
+            return true;
+          },
+        },
+        circularList: {
+          name: "Lista Circular",
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Lista Circular</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> Uma lista encadeada onde o último nó aponta de volta para o primeiro, formando um ciclo.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Um carrossel, onde após o último cavalo, você volta para o primeiro.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Permite rotação eficiente. Acesso a qualquer nó a partir de qualquer ponto.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Escalonamento de processos (Round-Robin), playlists de música em modo de repetição.</p>`,
+          controls: [
+            { label: "Adicionar", action: "add", color: "emerald" },
+            { label: "Rotacionar (Próximo)", action: "rotate", color: "sky" },
+          ],
+          process: (action) => {
+            if (action === "add") {
+              const value = Math.floor(Math.random() * 900) + 100;
+              state.elements.push({ id: state.taskId++, value });
+              addToLog(`✅ Adicionado ${value}.`);
+            } else if (action === "rotate") {
+              if (state.elements.length < 2) {
+                updateExplanation(
+                  "Precisa de pelo menos 2 elementos para rotacionar."
+                );
+                return false;
+              }
+              const first = state.elements.shift();
+              state.elements.push(first);
+              addToLog(`🔄 Lista rotacionada. ${first.value} foi para o fim.`);
+            }
+            return true;
+          },
+        },
+        staticList: {
+          name: `Lista Estática (Tamanho Máx: ${state.maxSize})`,
+          description: `
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Lista Estática (Array)</h2>
+                <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> Uma coleção de elementos de tamanho fixo, armazenada em memória contígua.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma caixa de ovos, com um número fixo de espaços.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Acesso por índice é muito rápido O(1). Inserção/Remoção no meio é lento O(n) porque exige deslocar elementos.</p>
+                <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Quando o tamanho máximo dos dados é conhecido e o acesso rápido por índice é crucial.</p>`,
+          controls: [
+            {
+              label: "Inserir no Fim",
+              action: "enqueue",
+              color: "emerald",
+              needsIndex: false,
+            },
+            {
+              label: "Inserir no Índice",
+              action: "insert_at",
+              color: "teal",
+              needsIndex: true,
+            },
+            {
+              label: "Remover do Índice",
+              action: "remove_at",
+              color: "rose",
+              needsIndex: true,
+            },
+          ],
+          process: (action, params) => {
+            if (action === "enqueue") {
+              return SIMULATIONS.queue.process(action); // Reutiliza a lógica da fila
+            } else if (action === "insert_at") {
+              if (state.elements.length >= state.maxSize) {
+                updateExplanation("Erro: A lista está cheia!");
+                return false;
+              }
+              if (
+                isNaN(params.idx) ||
+                params.idx < 0 ||
+                params.idx > state.elements.length
+              ) {
+                updateExplanation("Índice inválido.");
+                return false;
+              }
+              const value = Math.floor(Math.random() * 900) + 100;
+              state.elements.splice(params.idx, 0, {
+                id: state.taskId++,
+                value,
+              });
+              addToLog(`✅ Inserido ${value} no índice ${params.idx}.`);
+            } else if (action === "remove_at") {
+              if (
+                isNaN(params.idx) ||
+                params.idx < 0 ||
+                params.idx >= state.elements.length
+              ) {
+                updateExplanation("Índice inválido.");
+                return false;
+              }
+              const removed = state.elements.splice(params.idx, 1)[0];
+              animateAndRemove(
+                removed,
+                `Removido ${removed.value} do índice ${params.idx}.`
+              );
+            }
+            return true;
+          },
+        },
+      };
+
+      // --- Lógica de Processamento e Fila ---
+
+      function queueAction(action, params = {}) {
+        const simConfig = SIMULATIONS[select.value];
+        const control = simConfig.controls.find((c) => c.action === action);
+        state.actionQueue.push({ action, params, label: control.label });
+
+        updateExplanation(
+          `Ação "${control.label}" adicionada à fila de processamento.`
+        );
+        renderWaitingList();
+
+        if (!processInterval) {
+          startProcessing();
+        }
+
+        // Melhoria de Experiência Mobile: Rola para a área de visualização
+        if (window.innerWidth < 1024) {
+          // 1024px é o breakpoint 'lg' do Tailwind
+          const vizualizationArea = document.getElementById("explanation-box");
+          if (vizualizationArea) {
+            setTimeout(() => {
+              vizualizationArea.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }, 100);
+          }
+        }
+      }
+
+      function startProcessing() {
+        if (processInterval) clearInterval(processInterval);
+        processInterval = setInterval(
+          processNextInQueue,
+          state.processingSpeed
+        );
+      }
+
+      function processNextInQueue() {
+        if (state.isProcessing || state.actionQueue.length === 0) {
+          return;
+        }
+        state.isProcessing = true;
+
+        const task = state.actionQueue.shift();
+        const simConfig = SIMULATIONS[select.value];
+
+        updateExplanation(`Processando: "${task.label}"...`);
+        renderWaitingList();
+
+        // Ações que não animam são resolvidas rapidamente
+        const needsAnimation =
+          task.action.includes("remove") ||
+          task.action.includes("pop") ||
+          task.action.includes("dequeue");
+        const success = simConfig.process(task.action, task.params);
+
+        if (!needsAnimation || !success) {
+          renderTasks();
+          state.isProcessing = false; // Libera para a próxima ação
+        }
+      }
+
+      // --- Funções de Renderização e Animação ---
+
+      function addToLog(message) {
+        if (state.log.length === 0) logContainer.innerHTML = "";
+        state.log.unshift(message); // Adiciona no início
+        if (state.log.length > 50) state.log.pop(); // Limita o log
+
+        const logEntry = document.createElement("p");
+        logEntry.className = "py-1 px-2 rounded bg-slate-100";
+        logEntry.textContent = message;
+        logContainer.prepend(logEntry);
+      }
+
+      function updateExplanation(text) {
+        explanationText.textContent = text;
+      }
+
+      function renderTaskElement(el, index) {
+        const currentSim = SIMULATIONS[select.value];
+        const taskEl = document.createElement("div");
+        taskEl.id = `task-${el.id}`;
+        taskEl.className =
+          "task p-3 bg-white rounded-lg shadow flex items-center justify-between transition-all duration-300";
+
+        let pointers = "";
+        if (currentSim.name.includes("Encadeada")) {
+          pointers = `<span class="text-2xl text-slate-400 font-mono">${
+            index < state.elements.length - 1 ? "→" : "→Ø"
+          }</span>`;
+        }
+        if (currentSim.name.includes("Duplamente")) {
+          pointers = `<span class="text-2xl text-slate-400 font-mono">${
+            index > 0 ? "←" : "Ø←"
+          }</span> ${pointers}`;
+        }
+        if (currentSim.name.includes("Circular") && state.elements.length > 1) {
+          if (index === state.elements.length - 1) {
+            pointers = `<span class="text-2xl text-violet-500 font-mono">→</span>`;
+          } else {
+            pointers = `<span class="text-2xl text-slate-400 font-mono">→</span>`;
+          }
+        }
+        taskEl.innerHTML = `
+            <div class="flex items-center">
+                <span class="text-xs font-bold text-indigo-500 bg-indigo-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">${index}</span>
+                <span class="font-mono text-lg">${el.value}</span>
+            </div>
+            <div class="font-mono">${pointers}</div>
+        `;
+        return taskEl;
+      }
+
+      function renderTasks() {
+        taskContainer.innerHTML = "";
+        state.elements.forEach((el, index) => {
+          taskContainer.appendChild(renderTaskElement(el, index));
+        });
+
+        if (select.value === "staticList") {
+          for (let i = state.elements.length; i < state.maxSize; i++) {
+            taskContainer.innerHTML += `<div class="p-3 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center">
+                <span class="text-xs font-bold text-slate-400 bg-slate-200 rounded-full w-6 h-6 flex items-center justify-center mr-3">${i}</span>
+                <span class="font-mono text-lg text-slate-400">vazio</span></div>`;
+          }
+        }
+      }
+
+      function renderWaitingList() {
+        if (state.actionQueue.length === 0) {
+          waitingListContainer.innerHTML = "";
+          return;
+        }
+        let html =
+          '<h4 class="text-sm font-semibold text-indigo-700 mb-1">Próximos na fila:</h4><ul class="text-xs space-y-1">';
+        state.actionQueue.slice(0, 5).forEach((task) => {
+          html += `<li class="bg-indigo-200 text-indigo-800 p-1 rounded-sm">${task.label}</li>`;
+        });
+        if (state.actionQueue.length > 5) {
+          html += `<li class="text-slate-500 p-1">+ ${
+            state.actionQueue.length - 5
+          } mais...</li>`;
+        }
+        html += "</ul>";
+        waitingListContainer.innerHTML = html;
+      }
+
+      function animateAndRemove(removedElement, logMessage) {
+        addToLog(`➡️ ${logMessage}`);
+        const originalEl = document.getElementById(`task-${removedElement.id}`);
+        if (originalEl) originalEl.classList.add("processing-out");
+
+        const clone = renderTaskElement(
+          removedElement,
+          state.elements.indexOf(removedElement)
+        );
+        clone.id = "";
+        clone.classList.add("highlight-op");
+
+        actionContainer.innerHTML = "";
+        actionContainer.appendChild(clone);
+        renderWaitingList();
+
+        // O timeout aqui é crucial para a animação
+        setTimeout(() => {
+          renderTasks();
+          actionContainer.innerHTML = `<p class="text-slate-500">Aguardando ação...</p>`;
+          state.isProcessing = false; // Libera a fila para o próximo item
+        }, 1500); // Um tempo fixo para a animação ser visível
+      }
+
+      function setupSimulation(simName) {
+        state.elements = [];
+        state.actionQueue = [];
+        state.log = [];
+        state.taskId = 0;
+        state.isProcessing = false;
+        if (processInterval) clearInterval(processInterval);
+        processInterval = null;
+
+        const simConfig = SIMULATIONS[simName];
+
+        structureTitle.textContent = simConfig.name;
+        conceptExplanation.innerHTML = simConfig.description;
+        updateExplanation("Selecione uma ação no painel de controle.");
+        actionContainer.innerHTML = `<p class="text-slate-500">Aguardando ação...</p>`;
+        logContainer.innerHTML = `<p class="text-slate-400">Nenhuma operação ainda.</p>`;
+        renderWaitingList();
+
+        controlsContainer.innerHTML = "";
+        let needsIndex = false;
+        simConfig.controls.forEach((control) => {
+          const button = document.createElement("button");
+          button.textContent = control.label;
+          button.className = `w-full bg-${control.color}-500 hover:bg-${control.color}-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105`;
+          button.onclick = () => {
+            const params = control.needsIndex
+              ? { idx: parseInt(indexInput.value, 10) }
+              : {};
+            queueAction(control.action, params);
+          };
+          controlsContainer.appendChild(button);
+          if (control.needsIndex) needsIndex = true;
+        });
+
+        const hr = document.createElement("hr");
+        hr.className = "my-3 border-slate-300";
+        controlsContainer.appendChild(hr);
+
+        const clearButton = document.createElement("button");
+        clearButton.textContent = "Limpar Lista";
+        clearButton.className =
+          "w-full bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-3 rounded-lg shadow-md";
+        clearButton.onclick = () => {
+          state.elements = [];
+          state.actionQueue = [];
+          state.taskId = 0;
+          addToLog("🧹 Lista limpa.");
+          renderTasks();
+        };
+        controlsContainer.appendChild(clearButton);
+
+        indexInputContainer.classList.toggle("hidden", !needsIndex);
+        renderTasks();
+      }
+
+      // --- Inicialização ---
+      speedSlider.addEventListener("input", (e) => {
+        state.processingSpeed = 3000 - parseInt(e.target.value, 10);
+        // Reinicia o processador com a nova velocidade se ele estiver ativo
+        if (processInterval) {
+          startProcessing();
+        }
+      });
+      select.addEventListener("change", (e) => setupSimulation(e.target.value));
+      setupSimulation(select.value);
+    </script>
+  </body>
+</html>
