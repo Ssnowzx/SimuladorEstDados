@@ -12,7 +12,7 @@ Este projeto foi desenvolvido para ajudar estudantes e profissionais a compreend
 
 ![Simulador em Ação](https://raw.githubusercontent.com/Ssnowzx/SimuladorEstDados/main/demo.gif)
 
-*Interface interativa mostrando simulação de fila com animações em tempo real*
+_Interface interativa mostrando simulação de fila com animações em tempo real_
 
 ### 🌟 Principais Destaques
 
@@ -106,6 +106,7 @@ SimuladorEstDados/
 ## 🚀 Como Usar
 
 ### 🌐 Versão Online (Mais Fácil)
+
 **[👉 Clique aqui para usar diretamente no navegador](https://simulador-est-dados.vercel.app/)**
 
 Não precisa instalar nada! Funciona em qualquer dispositivo com navegador moderno.
@@ -134,6 +135,7 @@ php -S localhost:8000
 ```
 
 ### 📄 Versão Offline (Compatibilidade)
+
 Para máxima compatibilidade, você pode usar `simuladorDados.html` diretamente no navegador (sem servidor).
 
 ## 📱 Interface do Usuário

@@ -30,7 +30,7 @@ export class UIRenderer {
   // Adiciona entrada ao log
   addToLog(message) {
     if (this.state.log.length === 0) this.logContainer.innerHTML = "";
-    
+
     const logEntry = document.createElement("p");
     logEntry.className = "py-1 px-2 rounded bg-slate-100";
     logEntry.textContent = message;
@@ -46,14 +46,12 @@ export class UIRenderer {
 
     let pointers = "";
     if (currentSim.name.includes("Encadeada")) {
-      pointers = `<span class="text-2xl text-slate-400 font-mono">${
-        index < this.state.elements.length - 1 ? "→" : "→Ø"
-      }</span>`;
+      pointers = `<span class="text-2xl text-slate-400 font-mono">${index < this.state.elements.length - 1 ? "→" : "→Ø"
+        }</span>`;
     }
     if (currentSim.name.includes("Duplamente")) {
-      pointers = `<span class="text-2xl text-slate-400 font-mono">${
-        index > 0 ? "←" : "Ø←"
-      }</span> ${pointers}`;
+      pointers = `<span class="text-2xl text-slate-400 font-mono">${index > 0 ? "←" : "Ø←"
+        }</span> ${pointers}`;
     }
     if (currentSim.name.includes("Circular") && this.state.elements.length > 1) {
       if (index === this.state.elements.length - 1) {
@@ -97,7 +95,7 @@ export class UIRenderer {
       this.waitingListContainer.innerHTML = "";
       return;
     }
-    
+
     let html = '<h4 class="text-sm font-semibold text-indigo-700 mb-1">Próximos na fila:</h4><ul class="text-xs space-y-1">';
     this.state.actionQueue.slice(0, 5).forEach((task) => {
       html += `<li class="bg-indigo-200 text-indigo-800 p-1 rounded-sm">${task.label}</li>`;
@@ -115,6 +113,37 @@ export class UIRenderer {
 
     this.structureTitle.textContent = simConfig.name;
     this.conceptExplanation.innerHTML = simConfig.description;
+    // Insere o snippet de exemplo logo abaixo da explicação
+    if (simConfig.example) {
+      this.conceptExplanation.innerHTML += simConfig.example;
+    }
+    // Adiciona botão de copiar para o último bloco <pre> se existir
+    setTimeout(() => {
+      const pre = this.conceptExplanation.querySelector('pre');
+      if (!pre) return;
+      // Evita adicionar múltiplos botões
+      if (pre.querySelector('.copy-btn')) return;
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copiar';
+      btn.title = 'Copiar código';
+      btn.onclick = async (e) => {
+        const codeEl = pre.querySelector('code');
+        if (!codeEl) return;
+        const text = codeEl.textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = 'Copiado!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1500);
+        } catch (err) {
+          btn.textContent = 'Erro';
+          setTimeout(() => { btn.textContent = 'Copiar'; }, 1500);
+        }
+      };
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
+    }, 50);
     this.updateExplanation("Selecione uma ação no painel de controle.");
     this.actionContainer.innerHTML = `<p class="text-slate-500">Aguardando ação...</p>`;
     this.logContainer.innerHTML = `<p class="text-slate-400">Nenhuma operação ainda.</p>`;
@@ -163,7 +192,7 @@ export class UIRenderer {
   animateAndRemove(removedElement, logMessage, onComplete) {
     this.state.addToLog(`➡️ ${logMessage}`);
     this.addToLog(`➡️ ${logMessage}`);
-    
+
     const originalEl = document.getElementById(`task-${removedElement.id}`);
     if (originalEl) originalEl.classList.add("processing-out");
 

@@ -10,7 +10,7 @@ class DataStructureSimulator {
     this.operations = new DataStructureOperations(this.state);
     this.ui = new UIRenderer(this.state);
     this.processInterval = null;
-    
+
     this.initializeEventListeners();
     this.setupSimulation(this.ui.select.value);
   }
@@ -72,10 +72,10 @@ class DataStructureSimulator {
     if (this.state.isProcessing || !this.state.hasActions()) {
       return;
     }
-    
+
     this.state.isProcessing = true;
     const task = this.state.getNextAction();
-    
+
     this.ui.updateExplanation(`Processando: "${task.label}"...`);
     this.ui.renderWaitingList();
 
@@ -95,8 +95,8 @@ class DataStructureSimulator {
 
     // Verifica se precisa de animação
     const needsAnimation = task.action.includes("remove") ||
-                          task.action.includes("pop") ||
-                          task.action.includes("dequeue");
+      task.action.includes("pop") ||
+      task.action.includes("dequeue");
 
     if (!needsAnimation || !result.removed) {
       this.ui.renderTasks();

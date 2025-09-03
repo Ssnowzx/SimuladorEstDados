@@ -51,12 +51,49 @@ body {
   background: #94a3b8;
 }
 
+/* Estilo para blocos de código com botão copiar */
+pre {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: #0f172a; /* slate-900 */
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+.copy-btn.copied {
+  background: #059669; /* emerald-600 */
+}
+
+/* Pequena responsividade para o botão copiar */
+@media (max-width: 640px) {
+  .copy-btn {
+    right: 6px;
+    top: 6px;
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+}
+
 /* Responsividade adicional */
 @media (max-width: 768px) {
   .task {
     padding: 0.5rem;
   }
-  
+
   .task span {
     font-size: 0.9rem;
   }

@@ -8,6 +8,19 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Pense em uma fila de supermercado. Quem chega primeiro, é atendido primeiro.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção (enqueue) e Remoção (dequeue) são O(1).</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Gerenciamento de tarefas (impressão, processos), buffers de dados.</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>#include <queue>
+
+class Queue {
+public:
+  void enqueue(int v) { q.push(v); }
+  int dequeue() { int v = q.front(); q.pop(); return v; }
+  int peek() const { return q.front(); }
+private:
+  std::queue<int> q;
+};</code></pre>
+    `,
     controls: [
       {
         label: "Adicionar no Fim (Enqueue)",
@@ -30,6 +43,19 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma pilha de pratos. Você coloca um prato no topo e remove o prato do topo.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção (push) e Remoção (pop) são O(1).</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Botão "Voltar" em navegadores, funcionalidade de "Desfazer" (Undo), gerenciamento de chamadas de função.</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>#include <stack>
+
+class Stack {
+public:
+  void push(int v) { s.push(v); }
+  int pop() { int v = s.top(); s.pop(); return v; }
+  int top() const { return s.top(); }
+private:
+  std::stack<int> s;
+};</code></pre>
+    `,
     controls: [
       { label: "Empilhar (Push)", action: "push", color: "emerald" },
       { label: "Desempilhar (Pop)", action: "pop", color: "rose" },
@@ -44,6 +70,17 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma caça ao tesouro, onde cada pista aponta para a próxima.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção/Remoção no início é O(1). No fim, é O(n) se não houver ponteiro para a cauda. Acesso/Busca é O(n).</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Implementação de outras estruturas (pilhas, filas), gerenciamento de memória dinâmica.</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>struct Node { int val; Node* next; Node(int v):val(v),next(nullptr){} };
+
+class SinglyLinkedList {
+  Node* head = nullptr;
+public:
+  void addStart(int v) { Node* n = new Node(v); n->next = head; head = n; }
+  void addEnd(int v) { if (!head) { head = new Node(v); return; } Node* cur = head; while (cur->next) cur = cur->next; cur->next = new Node(v); }
+};</code></pre>
+    `,
     controls: [
       {
         label: "Inserir no Início",
@@ -67,6 +104,16 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Um trem com vagões conectados em ambos os lados, permitindo ir para frente e para trás.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção/Remoção no início ou fim é O(1). Remoção de um elemento específico (se o nó for conhecido) é O(1).</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Listas de "Mais recentes" (MRU), funcionalidade de "Desfazer/Refazer" (Undo/Redo).</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>struct DNode { int val; DNode* next; DNode* prev; DNode(int v):val(v),next(nullptr),prev(nullptr){} };
+
+class DoublyLinkedList {
+  DNode* head = nullptr; DNode* tail = nullptr;
+public:
+  void addEnd(int v) { DNode* n = new DNode(v); if(!head){ head = tail = n; return; } tail->next = n; n->prev = tail; tail = n; }
+};</code></pre>
+    `,
     controls: [
       {
         label: "Inserir no Início",
@@ -91,6 +138,20 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Um carrossel, onde após o último cavalo, você volta para o primeiro.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Permite rotação eficiente. Acesso a qualquer nó a partir de qualquer ponto.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Escalonamento de processos (Round-Robin), playlists de música em modo de repetição.</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>struct CNode { int val; CNode* next; CNode(int v):val(v),next(nullptr){} };
+
+class CircularList {
+  CNode* head = nullptr;
+public:
+  void add(int v) {
+    CNode* n = new CNode(v);
+    if(!head){ head = n; n->next = n; return; }
+    CNode* cur = head; while(cur->next != head) cur = cur->next; cur->next = n; n->next = head;
+  }
+};</code></pre>
+    `,
     controls: [
       { label: "Adicionar", action: "add", color: "emerald" },
       { label: "Rotacionar (Próximo)", action: "rotate", color: "sky" },
@@ -105,6 +166,16 @@ export const SIMULATIONS = {
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma caixa de ovos, com um número fixo de espaços.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Acesso por índice é muito rápido O(1). Inserção/Remoção no meio é lento O(n) porque exige deslocar elementos.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Quando o tamanho máximo dos dados é conhecido e o acesso rápido por índice é crucial.</p>`,
+    example: `
+      <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
+      <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>#include <array>
+
+const int MAX = 5;
+std::array<int, MAX> arr; // valores padrão indefinidos
+arr[0] = 42; // inserir no índice 0
+// remoção pode usar deslocamento manual
+</code></pre>
+    `,
     controls: [
       {
         label: "Inserir no Fim",
