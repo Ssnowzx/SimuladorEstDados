@@ -98,3 +98,79 @@ pre {
     font-size: 0.9rem;
   }
 }
+
+/* Estilo dos nós / caixas usados na visualização */
+.node-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(15, 23, 42, 0.06); /* slate-900/6 */
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  transition: transform 300ms ease, box-shadow 300ms ease, background 300ms ease;
+}
+
+.node-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.08);
+}
+
+/* Seta entre nós */
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b; /* slate-500 */
+  padding: 0 0.25rem;
+  user-select: none;
+}
+
+/* Rótulo de topo para pilha */
+.top-label {
+  background: #ecfdf5; /* emerald-50 */
+  color: #065f46; /* emerald-800 */
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+}
+
+/* Animações simples para empilhar/desempilhar */
+@keyframes pushIn {
+  0% {
+    transform: translateY(-20px) scale(0.98);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.push-anim {
+  animation: pushIn 400ms ease forwards;
+}
+
+.pop-anim {
+  animation: popOut 400ms ease forwards;
+}
+
+/* Ajustes para container horizontal com overflow */
+#task-container.flex,
+.task-container.flex {
+  display: flex;
+  align-items: center;
+}

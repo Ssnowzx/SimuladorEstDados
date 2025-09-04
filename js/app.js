@@ -93,7 +93,7 @@ class DataStructureSimulator {
       return;
     }
 
-    // Verifica se precisa de animação
+    // Verifica se precisa de animação de remoção
     const needsAnimation = task.action.includes("remove") ||
       task.action.includes("pop") ||
       task.action.includes("dequeue");

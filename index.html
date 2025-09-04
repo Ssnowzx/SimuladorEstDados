@@ -39,10 +39,10 @@
       </header>
 
       <!-- Corpo da Simulação -->
-      <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
         <!-- Coluna 1: Controles e Log -->
         <div
-          class="lg:col-span-1 bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col gap-6"
+          class="lg:col-span-3 bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col gap-6"
         >
           <div>
             <h2 class="text-xl font-semibold mb-4 text-center">
@@ -98,7 +98,7 @@
         </div>
 
         <!-- Coluna 2: Visualização -->
-        <div class="lg:col-span-2 space-y-4">
+        <div class="lg:col-span-9 space-y-4">
           <div
             id="explanation-box"
             class="bg-sky-100 border-l-4 border-sky-500 text-sky-800 p-4 rounded-r-lg min-h-[70px]"
@@ -108,10 +108,10 @@
               Selecione uma estrutura e adicione elementos para começar.
             </p>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Caixa da Estrutura (Esquerda) -->
             <div
-              class="bg-slate-200 rounded-lg p-4 border-2 border-dashed border-slate-400 min-h-[20rem]"
+              class="bg-slate-200 rounded-lg p-4 border-2 border-dashed border-slate-400 min-h-[20rem] md:col-span-2"
             >
               <h3
                 id="structure-title"
@@ -125,7 +125,7 @@
             </div>
             <!-- Caixa da Ação (Direita) -->
             <div
-              class="bg-indigo-100 rounded-lg p-4 border-2 border-dashed border-indigo-300 min-h-[20rem] flex flex-col"
+              class="bg-indigo-100 rounded-lg p-3 border-2 border-dashed border-indigo-300 min-h-[20rem] flex flex-col md:col-span-1"
             >
               <h3
                 class="font-semibold text-center mb-2 text-lg text-indigo-800"

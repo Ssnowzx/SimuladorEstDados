@@ -37,56 +37,175 @@ export class UIRenderer {
     this.logContainer.prepend(logEntry);
   }
 
-  // Renderiza um elemento da tarefa
+  // Renderiza um elemento da tarefa (nó genérico usado por vários layouts)
   renderTaskElement(el, index) {
     const currentSim = SIMULATIONS[this.select.value];
     const taskEl = document.createElement("div");
     taskEl.id = `task-${el.id}`;
-    taskEl.className = "task p-3 bg-white rounded-lg shadow flex items-center justify-between transition-all duration-300";
+    taskEl.className = "node-box p-3 bg-white rounded-lg shadow flex items-center justify-between min-w-[5.5rem]";
 
-    let pointers = "";
-    if (currentSim.name.includes("Encadeada")) {
-      pointers = `<span class="text-2xl text-slate-400 font-mono">${index < this.state.elements.length - 1 ? "→" : "→Ø"
-        }</span>`;
-    }
-    if (currentSim.name.includes("Duplamente")) {
-      pointers = `<span class="text-2xl text-slate-400 font-mono">${index > 0 ? "←" : "Ø←"
-        }</span> ${pointers}`;
-    }
-    if (currentSim.name.includes("Circular") && this.state.elements.length > 1) {
-      if (index === this.state.elements.length - 1) {
-        pointers = `<span class="text-2xl text-violet-500 font-mono">→</span>`;
-      } else {
-        pointers = `<span class="text-2xl text-slate-400 font-mono">→</span>`;
-      }
+    // badge de índice
+    const badge = `<span class="text-xs font-bold text-indigo-500 bg-indigo-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">${index}</span>`;
+
+    // indica topo para pilha
+    let topLabel = "";
+    if (this.select.value === 'stack' && index === this.state.elements.length - 1) {
+      topLabel = `<span class="top-label ml-3 text-sm font-semibold text-emerald-700">Topo</span>`;
     }
 
     taskEl.innerHTML = `
       <div class="flex items-center">
-        <span class="text-xs font-bold text-indigo-500 bg-indigo-100 rounded-full w-6 h-6 flex items-center justify-center mr-3">${index}</span>
+        ${badge}
         <span class="font-mono text-lg">${el.value}</span>
       </div>
-      <div class="font-mono">${pointers}</div>
+      <div>${topLabel}</div>
     `;
     return taskEl;
   }
 
-  // Renderiza todas as tarefas
+  // Renderiza todas as tarefas com layout específico por estrutura
   renderTasks() {
     this.taskContainer.innerHTML = "";
+
+    const sim = this.select.value;
+
+    // Queue: horizontal com setas
+    if (sim === 'queue') {
+      this.taskContainer.className = 'flex items-center space-x-3 overflow-x-auto p-2';
+      this.state.elements.forEach((el, index) => {
+        const node = this.renderTaskElement(el, index);
+        node.classList.add('push-anim');
+        this.taskContainer.appendChild(node);
+        if (index < this.state.elements.length - 1) {
+          const arrow = document.createElement('div');
+          arrow.className = 'arrow text-2xl text-slate-400 font-mono';
+          arrow.innerHTML = '&#8594;'; // →
+          this.taskContainer.appendChild(arrow);
+        }
+      });
+      return;
+    }
+
+    // Stack: vertical, topo no topo (visualizar como pilha)
+    if (sim === 'stack') {
+      this.taskContainer.className = 'flex flex-col-reverse items-center space-y-3 space-y-reverse p-2';
+      this.state.elements.forEach((el, index) => {
+        const node = this.renderTaskElement(el, index);
+        node.classList.add('push-anim');
+        this.taskContainer.appendChild(node);
+      });
+      return;
+    }
+
+    // Linked lists (singly / doubly / circular): horizontal com setas; doubly com setas bidirecionais
+    if (sim === 'singlyLinkedList' || sim === 'doublyLinkedList' || sim === 'circularList') {
+      this.taskContainer.className = 'flex items-center space-x-3 overflow-x-auto p-2 relative';
+      this.state.elements.forEach((el, index) => {
+        const node = this.renderTaskElement(el, index);
+        node.classList.add('push-anim');
+        node.dataset.index = index;
+        this.taskContainer.appendChild(node);
+
+        // seta entre nós
+        if (index < this.state.elements.length - 1) {
+          const arrow = document.createElement('div');
+          if (sim === 'doublyLinkedList') {
+            arrow.className = 'arrow text-2xl text-slate-400 font-mono';
+            arrow.innerHTML = '&#8656;&#8212;&#8658;'; // ←—→ visual
+          } else {
+            arrow.className = 'arrow text-2xl text-slate-400 font-mono';
+            arrow.innerHTML = '&#8594;'; // →
+          }
+          this.taskContainer.appendChild(arrow);
+        }
+      });
+
+      // se circular, desenha conector curvo entre último e primeiro
+      if (sim === 'circularList' && this.state.elements.length > 1) {
+        this.drawCircularConnector();
+      } else {
+        // remove possível conector existente
+        const old = document.getElementById('circular-connector');
+        if (old) old.remove();
+      }
+
+      return;
+    }
+
+    // Static list (array): mostra caixas indexadas até maxSize
+    if (sim === 'staticList') {
+      this.taskContainer.className = 'grid grid-cols-4 gap-3 p-2';
+      for (let i = 0; i < this.state.maxSize; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'node-box p-3 bg-white rounded-lg shadow flex flex-col items-center justify-center min-h-[4rem]';
+        const idx = `<div class="text-xs font-bold text-slate-500 mb-1">${i}</div>`;
+        const content = i < this.state.elements.length ? `<div class="font-mono text-lg">${this.state.elements[i].value}</div>` : `<div class="text-slate-400 font-mono">vazio</div>`;
+        cell.innerHTML = `${idx}${content}`;
+        if (i < this.state.elements.length) cell.classList.add('push-anim');
+        this.taskContainer.appendChild(cell);
+      }
+      return;
+    }
+
+    // Fallback: lista vertical padrão
+    this.taskContainer.className = '';
     this.state.elements.forEach((el, index) => {
-      this.taskContainer.appendChild(this.renderTaskElement(el, index));
+      const node = this.renderTaskElement(el, index);
+      node.classList.add('push-anim');
+      this.taskContainer.appendChild(node);
+    });
+  }
+
+  // Desenha um conector SVG curvo entre o último e o primeiro nó da lista circular
+  drawCircularConnector() {
+    // Removido: para evitar qualquer artefato visual (pontas/arestas) o conector SVG foi desativado.
+    const existing = document.getElementById('circular-connector');
+    if (existing) existing.remove();
+    return; // sem desenho
+  }
+
+  // Anima a operação 'rotate' (move o primeiro elemento visualmente para o fim)
+  animateRotate(firstElement, onComplete) {
+    const original = document.getElementById(`task-${firstElement.id}`);
+    if (!original) { onComplete(); return; }
+
+    // calcula destino (posição do último elemento)
+    const nodes = Array.from(this.taskContainer.querySelectorAll('.node-box'));
+    let lastNode = nodes[nodes.length - 1];
+    // se apenas 1 nó, simplesmente pulse
+    if (!lastNode || nodes.length < 2) {
+      original.classList.add('push-anim');
+      setTimeout(() => onComplete(), 400);
+      return;
+    }
+
+    const origRect = original.getBoundingClientRect();
+    const lastRect = lastNode.getBoundingClientRect();
+    const containerRect = this.taskContainer.getBoundingClientRect();
+
+    // clone para animar
+    const clone = original.cloneNode(true);
+    clone.style.position = 'absolute';
+    clone.style.left = `${origRect.left - containerRect.left}px`;
+    clone.style.top = `${origRect.top - containerRect.top}px`;
+    clone.style.margin = '0';
+    clone.style.zIndex = '999';
+    this.taskContainer.appendChild(clone);
+
+    // transforma para destino
+    const translateX = (lastRect.left - origRect.left);
+    const translateY = (lastRect.top - origRect.top);
+    clone.style.transition = 'transform 600ms cubic-bezier(.2,.8,.2,1), opacity 300ms';
+    requestAnimationFrame(() => {
+      clone.style.transform = `translate(${translateX}px, ${translateY}px)`;
+      clone.style.opacity = '0.95';
     });
 
-    if (this.select.value === "staticList") {
-      for (let i = this.state.elements.length; i < this.state.maxSize; i++) {
-        this.taskContainer.innerHTML += `
-          <div class="p-3 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center">
-            <span class="text-xs font-bold text-slate-400 bg-slate-200 rounded-full w-6 h-6 flex items-center justify-center mr-3">${i}</span>
-            <span class="font-mono text-lg text-slate-400">vazio</span>
-          </div>`;
-      }
-    }
+    clone.addEventListener('transitionend', () => {
+      clone.remove();
+      // pequena espera para sensação de continuidade
+      setTimeout(() => onComplete(), 80);
+    }, { once: true });
   }
 
   // Renderiza a lista de espera
