@@ -36,6 +36,7 @@ class DataStructureSimulator {
   queueAction(action, params = {}) {
     const simConfig = SIMULATIONS[this.ui.select.value];
     const control = simConfig.controls.find((c) => c.action === action);
+    // Remove prompt: agora o campo de tamanho máximo é suficiente
     this.state.addToQueue(action, params, control.label);
 
     this.ui.updateExplanation(`Ação "${control.label}" adicionada à fila de processamento.`);

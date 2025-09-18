@@ -42,16 +42,20 @@ private:
       <p class="text-slate-600"><strong class="font-semibold">Princípio:</strong> LIFO (Last-In, First-Out) - O último elemento que entra é o primeiro a sair.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Analogia:</strong> Uma pilha de pratos. Você coloca um prato no topo e remove o prato do topo.</p>
       <p class="text-slate-600 mt-2"><strong class="font-semibold">Complexidade:</strong> Inserção (push) e Remoção (pop) são O(1).</p>
-      <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Botão "Voltar" em navegadores, funcionalidade de "Desfazer" (Undo), gerenciamento de chamadas de função.</p>`,
+      <p class="text-slate-600 mt-2"><strong class="font-semibold">Uso Comum:</strong> Botão "Voltar" em navegadores, funcionalidade de "Desfazer" (Undo), gerenciamento de chamadas de função.</p>
+      <p class='text-slate-600 mt-2'><strong class='font-semibold'>Limites:</strong> Agora é possível definir o tamanho máximo da pilha. O simulador exibe mensagens de pilha cheia ou vazia conforme o estado.</p>
+    `,
     example: `
       <h4 class="text-sm font-semibold text-slate-700 mt-4">Exemplo (C++)</h4>
       <pre class="mt-2 p-3 bg-slate-100 rounded text-sm overflow-auto"><code>#include <stack>
-
+const int MAX = 5;
 class Stack {
 public:
-  void push(int v) { s.push(v); }
+  void push(int v) { if(s.size() < MAX) s.push(v); }
   int pop() { int v = s.top(); s.pop(); return v; }
   int top() const { return s.top(); }
+  bool isFull() const { return s.size() == MAX; }
+  bool isEmpty() const { return s.empty(); }
 private:
   std::stack<int> s;
 };</code></pre>
@@ -59,6 +63,7 @@ private:
     controls: [
       { label: "Empilhar (Push)", action: "push", color: "emerald" },
       { label: "Desempilhar (Pop)", action: "pop", color: "rose" },
+      { label: "Definir Tamanho Máximo", action: "set_max_size", color: "sky" },
     ],
   },
 

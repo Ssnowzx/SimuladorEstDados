@@ -89,11 +89,25 @@ export class UIRenderer {
     // Stack: vertical, topo no topo (visualizar como pilha)
     if (sim === 'stack') {
       this.taskContainer.className = 'flex flex-col-reverse items-center space-y-3 space-y-reverse p-2';
+      // Renderiza os elementos da pilha
       this.state.elements.forEach((el, index) => {
         const node = this.renderTaskElement(el, index);
         node.classList.add('push-anim');
         this.taskContainer.appendChild(node);
       });
+      // Renderiza slots vazios se pilha não estiver cheia
+      for (let i = this.state.elements.length; i < this.state.maxSize; i++) {
+        const emptySlot = document.createElement('div');
+        emptySlot.className = 'node-box p-3 bg-slate-100 rounded-lg shadow flex items-center justify-center min-w-[5.5rem] text-slate-400';
+        emptySlot.innerHTML = `<span class="font-mono">vazio</span>`;
+        this.taskContainer.appendChild(emptySlot);
+      }
+      // Mensagem de pilha cheia/vazia
+      if (this.state.elements.length === 0) {
+        this.updateExplanation('Pilha vazia.');
+      } else if (this.state.elements.length >= this.state.maxSize) {
+        this.updateExplanation('Pilha cheia!');
+      }
       return;
     }
 
@@ -270,8 +284,13 @@ export class UIRenderer {
 
     this.controlsContainer.innerHTML = "";
     let needsIndex = false;
+    let needsMaxSize = false;
 
     simConfig.controls.forEach((control) => {
+      // Detecta se é controle de tamanho máximo da pilha
+      if (control.action === "set_max_size" && simName === "stack") {
+        needsMaxSize = true;
+      }
       const button = document.createElement("button");
       button.textContent = control.label;
       button.className = `w-full bg-${control.color}-500 hover:bg-${control.color}-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105`;
@@ -285,23 +304,23 @@ export class UIRenderer {
       if (control.needsIndex) needsIndex = true;
     });
 
-    // Adiciona botão de limpar
-    const hr = document.createElement("hr");
-    hr.className = "my-3 border-slate-300";
-    this.controlsContainer.appendChild(hr);
-
-    const clearButton = document.createElement("button");
-    clearButton.textContent = "Limpar Lista";
-    clearButton.className = "w-full bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-3 rounded-lg shadow-md";
-    clearButton.onclick = () => {
-      this.state.elements = [];
-      this.state.actionQueue = [];
-      this.state.taskId = 0;
-      this.state.addToLog("🧹 Lista limpa.");
-      this.addToLog("🧹 Lista limpa.");
-      this.renderTasks();
-    };
-    this.controlsContainer.appendChild(clearButton);
+    // Campo para definir tamanho máximo da pilha
+    if (needsMaxSize) {
+      const maxSizeDiv = document.createElement("div");
+      maxSizeDiv.className = "mt-4 flex items-center gap-2";
+      maxSizeDiv.innerHTML = `<label for='max-size-input' class='text-sm font-medium text-slate-700'>Tamanho Máximo:</label><input id='max-size-input' type='number' min='1' max='99' value='${this.state.maxSize}' class='w-20 px-2 py-1 border border-slate-300 rounded-md text-sm' />`;
+      this.controlsContainer.appendChild(maxSizeDiv);
+      // Atualiza ao mudar
+      maxSizeDiv.querySelector('#max-size-input').addEventListener('change', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (!isNaN(val) && val >= 1 && val <= 99) {
+          onActionCallback('set_max_size', { max: val });
+          // Atualiza visual imediatamente
+          this.state.maxSize = val;
+          this.renderTasks();
+        }
+      });
+    }
 
     this.indexInputContainer.classList.toggle("hidden", !needsIndex);
     this.renderTasks();

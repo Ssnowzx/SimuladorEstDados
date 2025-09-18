@@ -29,15 +29,29 @@ export class DataStructureOperations {
   }
 
   // Processa operações da pilha
-  processStack(action) {
+  processStack(action, params = {}) {
+    // Permite definir tamanho máximo da pilha
+    if (action === "set_max_size") {
+      const max = parseInt(params.max, 10);
+      if (isNaN(max) || max < 1 || max > 99) {
+        return { success: false, message: "Tamanho inválido. Escolha entre 1 e 99." };
+      }
+      this.state.maxSize = max;
+      this.state.addToLog(`🔧 Tamanho máximo da pilha definido para ${max}.`);
+      return { success: true, message: `Tamanho máximo da pilha definido para ${max}.` };
+    }
+    // Push: verifica limite
     if (action === "push") {
+      if (this.state.elements.length >= this.state.maxSize) {
+        return { success: false, message: "Erro: Pilha cheia!" };
+      }
       const value = this.state.generateRandomValue();
       this.state.elements.push(this.state.addElement(value));
       this.state.addToLog(`✅ Empilhado ${value}.`);
       return { success: true };
     } else if (action === "pop") {
       if (this.state.elements.length === 0) {
-        return { success: false, message: "A estrutura está vazia." };
+        return { success: false, message: "Erro: Pilha vazia!" };
       }
       const removed = this.state.elements.pop();
       return { success: true, removed, message: `Desempilhado ${removed.value} do topo.` };

@@ -17,6 +17,7 @@ export class AppState {
     this.log = [];
     this.taskId = 0;
     this.isProcessing = false;
+    // Mantém maxSize atual (não reseta para 8)
   }
 
   // Adiciona um elemento
